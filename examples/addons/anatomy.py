@@ -1,7 +1,7 @@
 """
-Basic skeleton of a mitmproxy addon.
+mitmproxy 插件的基本骨架示例。
 
-Run as follows: mitmproxy -s anatomy.py
+运行方式：mitmproxy -s anatomy.py
 """
 
 import logging
@@ -13,7 +13,7 @@ class Counter:
 
     def request(self, flow):
         self.num = self.num + 1
-        logging.info("We've seen %d flows" % self.num)
+        logging.info("已捕获 %d 个流量" % self.num)
 
 
 addons = [Counter()]

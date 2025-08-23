@@ -1,7 +1,7 @@
 """
-Mirror all web pages.
+镜像翻转所有网页。
 
-Useful if you are living down under.
+对生活在"地球另一端"的人特别有用。
 """
 
 from mitmproxy import http

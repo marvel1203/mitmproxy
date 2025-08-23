@@ -1,9 +1,9 @@
 """
-Host a WSGI app in mitmproxy.
+在mitmproxy中托管WSGI应用。
 
-This example shows how to graft a WSGI app onto mitmproxy. In this
-instance, we're using the Flask framework (http://flask.pocoo.org/) to expose
-a single simplest-possible page.
+此示例展示了如何将WSGI应用嫁接到mitmproxy上。在这个
+实例中，我们使用Flask框架(http://flask.pocoo.org/)来展示
+一个最简单的页面。
 """
 
 from flask import Flask
@@ -19,11 +19,11 @@ def hello_world() -> str:
 
 
 addons = [
-    # Host app at the magic domain "example.com" on port 80. Requests to this
-    # domain and port combination will now be routed to the WSGI app instance.
+    # 在魔法域名"example.com"的80端口上托管应用。对这个
+    # 域名和端口组合的请求现在将被路由到WSGI应用实例。
     asgiapp.WSGIApp(app, "example.com", 80),
-    # TLS works too, but the magic domain needs to be resolvable from the mitmproxy machine due to mitmproxy's design.
-    # mitmproxy will connect to said domain and use its certificate but won't send any data.
-    # By using `--set upstream_cert=false` and `--set connection_strategy_lazy` the local certificate is used instead.
+    # TLS也能工作，但由于mitmproxy的设计，魔法域名需要能从mitmproxy机器上解析。
+    # mitmproxy将连接到该域名并使用其证书，但不会发送任何数据。
+    # 通过使用`--set upstream_cert=false`和`--set connection_strategy_lazy`参数，将改用本地证书。
     # asgiapp.WSGIApp(app, "example.com", 443),
 ]

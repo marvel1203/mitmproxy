@@ -18,12 +18,10 @@ from mitmproxy.coretypes import serializable
 @dataclass
 class Error(serializable.SerializableDataclass):
     """
-    An Error.
+    错误对象。
 
-    This is distinct from an protocol error response (say, a HTTP code 500),
-    which is represented by a normal `mitmproxy.http.Response` object. This class is
-    responsible for indicating errors that fall outside of normal protocol
-    communications, like interrupted connections, timeouts, or protocol errors.
+    用于表示超出正常协议通信范围的错误，如连接中断、超时、协议错误等。
+    与HTTP 500等协议错误响应不同。
     """
 
     msg: str
@@ -43,10 +41,11 @@ class Error(serializable.SerializableDataclass):
 
 class Flow(serializable.Serializable):
     """
-    Base class for network flows. A flow is a collection of objects,
-    for example HTTP request/response pairs or a list of TCP messages.
+    流量基类。
 
-    See also:
+    表示一次网络会话（如HTTP请求/响应对、TCP消息列表等）。
+
+    相关子类:
      - mitmproxy.http.HTTPFlow
      - mitmproxy.tcp.TCPFlow
      - mitmproxy.udp.UDPFlow

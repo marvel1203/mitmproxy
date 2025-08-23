@@ -1,10 +1,8 @@
 """
-This script simply prints all received HTTP Trailers.
+此脚本简单打印出所有接收到的HTTP尾部头信息(Trailers)。
 
-HTTP requests and responses can contain trailing headers which are sent after
-the body is fully transmitted. Such trailers need to be announced in the initial
-headers by name, so the receiving endpoint can wait and read them after the
-body.
+HTTP请求和响应可以包含在主体完全传输后发送的尾部头信息。这些尾部头需要在初始头信息中
+按名称提前声明，这样接收端才能等待并在读取主体后接收它们。
 """
 
 from mitmproxy import http
@@ -13,30 +11,30 @@ from mitmproxy.http import Headers
 
 def request(flow: http.HTTPFlow):
     if flow.request.trailers:
-        print("HTTP Trailers detected! Request contains:", flow.request.trailers)
+        print("检测到HTTP尾部头信息！请求包含:", flow.request.trailers)
 
     if flow.request.path == "/inject_trailers":
         if flow.request.is_http10:
-            # HTTP/1.0 doesn't support trailers
+            # HTTP/1.0不支持尾部头信息
             return
         elif flow.request.is_http11:
             if not flow.request.content:
-                # Avoid sending a body on GET requests or a 0 byte chunked body with trailers.
-                # Otherwise some servers return 400 Bad Request.
+                # 避免在GET请求上发送主体或发送带尾部头信息的0字节分块主体。
+                # 否则某些服务器会返回400 Bad Request。
                 return
-            # HTTP 1.1 requires transfer-encoding: chunked to send trailers
+            # HTTP 1.1要求使用transfer-encoding: chunked来发送尾部头信息
             flow.request.headers["transfer-encoding"] = "chunked"
-        # HTTP 2+ supports trailers on all requests/responses
+        # HTTP 2+在所有请求/响应上都支持尾部头信息
 
         flow.request.headers["trailer"] = "x-my-injected-trailer-header"
         flow.request.trailers = Headers([(b"x-my-injected-trailer-header", b"foobar")])
-        print("Injected a new request trailer...", flow.request.headers["trailer"])
+        print("注入了一个新的请求尾部头信息...", flow.request.headers["trailer"])
 
 
 def response(flow: http.HTTPFlow):
     assert flow.response
     if flow.response.trailers:
-        print("HTTP Trailers detected! Response contains:", flow.response.trailers)
+        print("检测到HTTP尾部头信息！响应包含:", flow.response.trailers)
 
     if flow.request.path == "/inject_trailers":
         if flow.request.is_http10:
@@ -48,4 +46,4 @@ def response(flow: http.HTTPFlow):
 
         flow.response.headers["trailer"] = "x-my-injected-trailer-header"
         flow.response.trailers = Headers([(b"x-my-injected-trailer-header", b"foobar")])
-        print("Injected a new response trailer...", flow.response.headers["trailer"])
+        print("注入了一个新的响应尾部头信息...", flow.response.headers["trailer"])

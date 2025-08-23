@@ -18,7 +18,12 @@ logger = logging.getLogger(__name__)
 
 class Master:
     """
-    The master handles mitmproxy's main event loop.
+    主控制器类，负责mitmproxy主事件循环。
+    主要职责：
+    - 初始化配置、插件、命令管理器
+    - 启动和关闭事件循环
+    - 触发运行/完成钩子
+    - 加载和重放流量
     """
 
     event_loop: asyncio.AbstractEventLoop
@@ -30,6 +35,12 @@ class Master:
         event_loop: asyncio.AbstractEventLoop | None = None,
         with_termlog: bool = False,
     ):
+        """
+        初始化主控制器
+        :param opts: 配置选项
+        :param event_loop: 异步事件循环
+        :param with_termlog: 是否启用终端日志
+        """
         self.options: options.Options = opts or options.Options()
         self.commands = command.CommandManager(self)
         self.addons = addonmanager.AddonManager(self)
@@ -52,6 +63,13 @@ class Master:
         mitmproxy_ctx.options = self.options
 
     async def run(self) -> None:
+        """
+        运行代理服务器主循环。
+        步骤：
+        - 设置异常处理器
+        - 启动代理服务器
+        - 等待退出信号
+        """
         with (
             asyncio_utils.install_exception_handler(self._asyncio_exception_handler),
             asyncio_utils.set_eager_task_factory(),
@@ -95,15 +113,21 @@ class Master:
 
     def shutdown(self):
         """
-        Shut down the proxy. This method is thread-safe.
+        关闭代理服务器（线程安全）
         """
         # We may add an exception argument here.
         self.event_loop.call_soon_threadsafe(self.should_exit.set)
 
     async def running(self) -> None:
+        """
+        触发运行状态钩子事件
+        """
         await self.addons.trigger_event(hooks.RunningHook())
 
     async def done(self) -> None:
+        """
+        触发完成状态钩子事件并清理资源
+        """
         await self.addons.trigger_event(hooks.DoneHook())
         self._legacy_log_events.uninstall()
         if self._termlog_addon is not None:
@@ -124,7 +148,8 @@ class Master:
 
     async def load_flow(self, f):
         """
-        Loads a flow
+        加载并重放流量数据
+        :param f: 要加载的流量对象
         """
 
         if (

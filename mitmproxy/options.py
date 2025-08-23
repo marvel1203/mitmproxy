@@ -13,55 +13,50 @@ class Options(optmanager.OptManager):
     def __init__(self, **kwargs) -> None:
         super().__init__()
         self.add_option(
-            "server", bool, True, "Start a proxy server. Enabled by default."
+            "server", bool, True, "启动代理服务器。默认启用。"
         )
         self.add_option(
             "showhost",
             bool,
             False,
-            """Use the Host header to construct URLs for display.
+            """使用 Host 头部构建用于显示的 URL。
 
-            This option is disabled by default because malicious apps may send misleading host headers to evade
-            your analysis. If this is not a concern, enable this options for better flow display.""",
+            默认禁用此选项，因为恶意应用可能发送误导性的 host 头部以规避你的分析。如果这不是问题，可以启用此选项以获得更好的流量显示。""",
         )
         self.add_option(
             "show_ignored_hosts",
             bool,
             False,
             """
-            Record ignored flows in the UI even if we do not perform TLS interception.
-            This option will keep ignored flows' contents in memory, which can greatly increase memory usage.
-            A future release will fix this issue, record ignored flows by default, and remove this option.
+            即使未进行 TLS 拦截，也在 UI 中记录被忽略的流量。
+            此选项会将被忽略流的内容保存在内存中，可能会大幅增加内存使用。
+            未来版本将修复此问题，默认记录被忽略流，并移除此选项。
             """,
         )
 
-        # Proxy options
+        # 代理相关选项
         self.add_option(
             "add_upstream_certs_to_client_chain",
             bool,
             False,
             """
-            Add all certificates of the upstream server to the certificate chain
-            that will be served to the proxy client, as extras.
+            将上游服务器的所有证书作为额外证书添加到将提供给代理客户端的证书链中。
             """,
         )
         self.add_option(
             "confdir",
             str,
             CONF_DIR,
-            "Location of the default mitmproxy configuration files.",
+            "mitmproxy 配置文件的默认位置。",
         )
         self.add_option(
             "certs",
             Sequence[str],
             [],
             """
-            SSL certificates of the form "[domain=]path". The domain may include
-            a wildcard, and is equal to "*" if not specified. The file at path
-            is a certificate in PEM format. If a private key is included in the
-            PEM, it is used, else the default key in the conf dir is used. The
-            PEM file should contain the full certificate chain, with the leaf
-            certificate as the first entry.
+            SSL 证书，格式为“[domain=]path”。domain 可包含通配符，若未指定则为“*”。
+            path 处的文件为 PEM 格式证书。如果包含私钥则使用，否则使用 confdir 下的默认私钥。
+            PEM 文件应包含完整证书链，叶子证书为第一个条目。
             """,
         )
         self.add_option(
@@ -69,139 +64,126 @@ class Options(optmanager.OptManager):
             Optional[str],
             None,
             """
-            Passphrase for decrypting the private key provided in the --cert option.
+            用于解密 --cert 选项中私钥的密码。
 
-            Note that passing cert_passphrase on the command line makes your passphrase visible in your system's
-            process list. Specify it in config.yaml to avoid this.
+            注意：在命令行传递 cert_passphrase 会使密码在系统进程列表中可见。建议在 config.yaml 中指定以避免泄露。
             """,
         )
         self.add_option(
-            "client_certs", Optional[str], None, "Client certificate file or directory."
+            "client_certs", Optional[str], None, "客户端证书文件或目录。"
         )
         self.add_option(
             "ignore_hosts",
             Sequence[str],
             [],
             """
-            Ignore host and forward all traffic without processing it. In
-            transparent mode, it is recommended to use an IP address (range),
-            not the hostname. In regular mode, only SSL traffic is ignored and
-            the hostname should be used. The supplied value is interpreted as a
-            regular expression and matched on the ip or the hostname.
+            忽略主机并直接转发所有流量，不做处理。
+            透明模式下建议使用 IP 地址（段），非主机名。常规模式下仅忽略 SSL 流量，需使用主机名。
+            支持正则表达式，匹配 IP 或主机名。
             """,
         )
-        self.add_option("allow_hosts", Sequence[str], [], "Opposite of --ignore-hosts.")
+        self.add_option("allow_hosts", Sequence[str], [], "与 --ignore-hosts 相反。")
         self.add_option(
             "listen_host",
             str,
             "",
-            "Address to bind proxy server(s) to (may be overridden for individual modes, see `mode`).",
+            "绑定代理服务器的地址（可被各模式单独覆盖，见 `mode` 选项）。",
         )
         self.add_option(
             "listen_port",
             Optional[int],
             None,
-            "Port to bind proxy server(s) to (may be overridden for individual modes, see `mode`). "
-            "By default, the port is mode-specific. The default regular HTTP proxy spawns on port 8080.",
+            "绑定代理服务器的端口（可被各模式单独覆盖，见 `mode` 选项）。默认端口依赖于模式。常规 HTTP 代理默认 8080 端口。",
         )
         self.add_option(
             "mode",
             Sequence[str],
             ["regular"],
             """
-            The proxy server type(s) to spawn. Can be passed multiple times.
+            要启动的代理服务器类型。可多次传递。
 
-            Mitmproxy supports "regular" (HTTP), "transparent", "socks5", "reverse:SPEC",
-            "upstream:SPEC", and "wireguard[:PATH]" proxy servers. For reverse and upstream proxy modes, SPEC
-            is host specification in the form of "http[s]://host[:port]". For WireGuard mode, PATH may point to
-            a file containing key material. If no such file exists, it will be created on startup.
+            支持 "regular"（HTTP）、"transparent"、"socks5"、"reverse:SPEC"、"upstream:SPEC" 和 "wireguard[:PATH]"。
+            reverse/upstream 模式下，SPEC 为 "http[s]://host[:port]"。WireGuard 模式下，PATH 可指向密钥文件，不存在则启动时创建。
 
-            You may append `@listen_port` or `@listen_host:listen_port` to override `listen_host` or `listen_port` for
-            a specific proxy mode. Features such as client playback will use the first mode to determine
-            which upstream server to use.
+            可追加 `@listen_port` 或 `@listen_host:listen_port`，为特定代理模式覆盖监听地址或端口。部分功能（如回放）会使用第一个模式确定上游服务器。
             """,
         )
         self.add_option(
             "upstream_cert",
             bool,
             True,
-            "Connect to upstream server to look up certificate details.",
+            "连接上游服务器以获取证书详情。",
         )
 
         self.add_option(
             "http2",
             bool,
             True,
-            "Enable/disable HTTP/2 support. HTTP/2 support is enabled by default.",
+            "启用/禁用 HTTP/2 支持。默认启用。",
         )
         self.add_option(
             "http2_ping_keepalive",
             int,
             58,
             """
-            Send a PING frame if an HTTP/2 connection is idle for more than
-            the specified number of seconds to prevent the remote site from closing it.
-            Set to 0 to disable this feature.
+            HTTP/2 连接空闲超过指定秒数时发送 PING 帧，防止远端关闭连接。
+            设为 0 可禁用此功能。
             """,
         )
         self.add_option(
             "http3",
             bool,
             True,
-            "Enable/disable support for QUIC and HTTP/3. Enabled by default.",
+            "启用/禁用 QUIC 和 HTTP/3 支持。默认启用。",
         )
         self.add_option(
             "http_connect_send_host_header",
             bool,
             True,
-            "Include host header with CONNECT requests. Enabled by default.",
+            "CONNECT 请求中包含 host 头。默认启用。",
         )
         self.add_option(
             "websocket",
             bool,
             True,
-            "Enable/disable WebSocket support. "
-            "WebSocket support is enabled by default.",
+            "启用/禁用 WebSocket 支持。默认启用。",
         )
         self.add_option(
             "rawtcp",
             bool,
             True,
-            "Enable/disable raw TCP connections. "
-            "TCP connections are enabled by default. ",
+            "启用/禁用原始 TCP 连接。默认启用。",
         )
         self.add_option(
             "ssl_insecure",
             bool,
             False,
-            """Do not verify upstream server SSL/TLS certificates.
+            """不验证上游服务器 SSL/TLS 证书。
 
-            If this option is enabled, certificate validation is skipped and mitmproxy itself will be vulnerable to
-            TLS interception.""",
+            启用后将跳过证书校验，mitmproxy 本身将易受 TLS 中间人攻击。""",
         )
         self.add_option(
             "ssl_verify_upstream_trusted_confdir",
             Optional[str],
             None,
             """
-            Path to a directory of trusted CA certificates for upstream server
-            verification prepared using the c_rehash tool.
+            上游服务器验证用的受信任 CA 证书目录，需用 c_rehash 工具预处理。
             """,
         )
         self.add_option(
             "ssl_verify_upstream_trusted_ca",
             Optional[str],
             None,
-            "Path to a PEM formatted trusted CA certificate.",
+            "PEM 格式的受信任 CA 证书路径。",
         )
         self.add_option(
             "tcp_hosts",
             Sequence[str],
             [],
             """
-            Generic TCP SSL proxy mode for all hosts that match the pattern.
-            Similar to --ignore-hosts, but SSL connections are intercepted.
-            The communication contents are printed to the log in verbose mode.
+            匹配指定主机的通用 TCP SSL 代理模式。
+            类似 --ignore-hosts，但会拦截 SSL 连接。
+            通信内容在详细日志模式下输出。
             """,
         )
         self.add_option(
@@ -209,9 +191,9 @@ class Options(optmanager.OptManager):
             Sequence[str],
             [],
             """
-            Generic UDP SSL proxy mode for all hosts that match the pattern.
-            Similar to --ignore-hosts, but SSL connections are intercepted.
-            The communication contents are printed to the log in verbose mode.
+            匹配指定主机的通用 UDP SSL 代理模式。
+            类似 --ignore-hosts，但会拦截 SSL 连接。
+            通信内容在详细日志模式下输出。
             """,
         )
         self.add_option(
@@ -219,8 +201,7 @@ class Options(optmanager.OptManager):
             int,
             CONTENT_VIEW_LINES_CUTOFF,
             """
-            Flow content view lines limit. Limit is enabled by default to
-            speedup flows browsing.
+            流内容视图行数限制。默认启用以加快流浏览速度。
             """,
         )
         self.add_option(
@@ -228,14 +209,14 @@ class Options(optmanager.OptManager):
             int,
             KEY_SIZE,
             """
-            TLS key size for certificates and CA.
+            证书和 CA 的 TLS 密钥长度。
             """,
         )
         self.add_option(
             "protobuf_definitions",
             Optional[str],
             None,
-            "Path to a .proto file that's used to resolve Protobuf field names when pretty-printing.",
+            "用于 Protobuf 美化显示字段名的 .proto 文件路径。",
         )
 
         self.update(**kwargs)

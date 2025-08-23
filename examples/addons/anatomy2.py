@@ -1,4 +1,6 @@
-"""An addon using the abbreviated scripting syntax."""
+"""
+使用简化脚本语法的 mitmproxy 插件示例。
+"""
 
 
 def request(flow):

@@ -1,7 +1,7 @@
 """
-Add a new mitmproxy option.
+添加一个新的mitmproxy选项。
 
-Usage:
+用法：
 
     mitmproxy -s options-simple.py --set addheader=true
 """
@@ -18,7 +18,7 @@ class AddHeader:
             name="addheader",
             typespec=bool,
             default=False,
-            help="Add a count header to responses",
+            help="向响应添加一个计数头部",
         )
 
     def response(self, flow):

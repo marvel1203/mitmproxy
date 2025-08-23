@@ -1,12 +1,12 @@
 """
-Process individual messages from a TCP connection.
+处理TCP连接中的单个消息。
 
-This script replaces full occurrences of "foo" with "bar" and prints various details for each message.
-Please note that TCP is stream-based and *not* message-based. mitmproxy splits stream contents into "messages"
-as they are received by socket.recv(). This is pretty arbitrary and should not be relied on.
-However, it is sometimes good enough as a quick hack.
+此脚本将完整出现的"foo"替换为"bar"，并为每条消息打印各种详细信息。
+请注意，TCP是基于流的，而*不是*基于消息的。mitmproxy将流内容拆分为
+socket.recv()接收到的"消息"。这是相当任意的，不应该被依赖。
+但是，作为快速解决方案，它有时已经足够好。
 
-Example Invocation:
+示例调用:
 
     mitmdump --tcp-hosts ".*" -s examples/tcp-simple.py
 """

@@ -1,4 +1,4 @@
-"""Add an HTTP header to each response."""
+"""为每个响应添加一个HTTP头部。"""
 
 
 class AddHeader:

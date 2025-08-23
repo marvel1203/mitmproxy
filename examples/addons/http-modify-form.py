@@ -1,13 +1,13 @@
-"""Modify an HTTP form submission."""
+"""修改HTTP表单提交。"""
 
 from mitmproxy import http
 
 
 def request(flow: http.HTTPFlow) -> None:
     if flow.request.urlencoded_form:
-        # If there's already a form, one can just add items to the dict:
+        # 如果已有表单，可以直接向字典中添加项目：
         flow.request.urlencoded_form["mitmproxy"] = "rocks"
     else:
-        # One can also just pass new form data.
-        # This sets the proper content type and overrides the body.
+        # 也可以直接传递新的表单数据。
+        # 这会设置适当的内容类型并覆盖请求体。
         flow.request.urlencoded_form = [("foo", "bar")]  # type: ignore[assignment]

@@ -1,14 +1,14 @@
 """
-Select which responses should be streamed.
+选择哪些响应应该被流式处理。
 
-Enable response streaming for all HTTP flows.
-This is equivalent to passing `--set stream_large_bodies=1` to mitmproxy.
+为所有HTTP流量启用响应流式处理。
+这相当于向mitmproxy传递`--set stream_large_bodies=1`参数。
 """
 
 
 def responseheaders(flow):
     """
-    Enables streaming for all responses.
-    This is equivalent to passing `--set stream_large_bodies=1` to mitmproxy.
+    为所有响应启用流式处理。
+    这相当于向mitmproxy传递`--set stream_large_bodies=1`参数。
     """
     flow.response.stream = True

@@ -1,4 +1,6 @@
-"""Add a custom command to mitmproxy's command prompt."""
+"""
+为 mitmproxy 命令行添加自定义命令的示例。
+"""
 
 import logging
 

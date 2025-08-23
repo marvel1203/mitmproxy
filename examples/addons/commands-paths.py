@@ -1,4 +1,6 @@
-"""Handle file paths as command arguments."""
+"""
+处理文件路径作为命令参数的示例。
+"""
 
 import logging
 from collections.abc import Sequence
@@ -26,7 +28,7 @@ class MyAddon:
             for cnt, dom in sorted((v, k) for (k, v) in totals.items()):
                 fp.write(f"{cnt}: {dom}\n")
 
-        logging.log(ALERT, "done")
+        logging.log(ALERT, "处理完成")
 
 
 addons = [MyAddon()]

@@ -1,4 +1,6 @@
-"""Handle flows as command arguments."""
+"""
+处理 flows 作为命令参数的示例。
+"""
 
 import logging
 from collections.abc import Sequence
@@ -15,7 +17,7 @@ class MyAddon:
         for f in flows:
             if isinstance(f, http.HTTPFlow):
                 f.request.headers["myheader"] = "value"
-        logging.log(ALERT, "done")
+        logging.log(ALERT, "处理完成")
 
 
 addons = [MyAddon()]

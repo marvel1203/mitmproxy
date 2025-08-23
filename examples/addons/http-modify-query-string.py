@@ -1,4 +1,4 @@
-"""Modify HTTP query parameters."""
+"""修改HTTP查询参数。"""
 
 from mitmproxy import http
 

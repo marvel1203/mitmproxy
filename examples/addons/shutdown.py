@@ -1,11 +1,11 @@
 """
-A simple way of shutting down the mitmproxy instance to stop everything.
+关闭mitmproxy实例的简单方法，用于停止所有操作。
 
-Usage:
+用法：
 
     mitmproxy -s shutdown.py
 
-    and then send a HTTP request to trigger the shutdown:
+    然后发送一个HTTP请求来触发关闭：
     curl --proxy localhost:8080 http://example.com/path
 """
 
@@ -16,7 +16,7 @@ from mitmproxy import http
 
 
 def request(flow: http.HTTPFlow) -> None:
-    # a random condition to make this example a bit more interactive
+    # 一个随机条件，使这个例子更具交互性
     if flow.request.pretty_url == "http://example.com/path":
-        logging.info("Shutting down everything...")
+        logging.info("正在关闭所有内容...")
         ctx.master.shutdown()

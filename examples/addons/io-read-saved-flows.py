@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Read a mitmproxy dump file.
+读取mitmproxy的dump文件。
 """
 
 import pprint
@@ -21,4 +21,4 @@ with open(sys.argv[1], "rb") as logfile:
             pp.pprint(f.get_state())
             print("")
     except FlowReadException as e:
-        print(f"Flow file corrupted: {e}")
+        print(f"流量文件已损坏: {e}")

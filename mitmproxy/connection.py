@@ -17,13 +17,13 @@ from mitmproxy.utils import human
 
 
 class ConnectionState(Flag):
-    """The current state of the underlying socket."""
-
-    CLOSED = 0
-    CAN_READ = 1
-    CAN_WRITE = 2
-    OPEN = CAN_READ | CAN_WRITE
-
+    """
+    连接状态枚举。
+    - CLOSED = 0      # 连接已关闭
+    - CAN_READ = 1    # 可以读取
+    - CAN_WRITE = 2   # 可以写入
+    - OPEN = 3        # 连接打开（可读可写）
+    """
 
 TransportProtocol = Literal["tcp", "udp"]
 
@@ -49,10 +49,10 @@ Address = tuple[str, int]
 @dataclass(kw_only=True)
 class Connection(serializable.SerializableDataclass, metaclass=ABCMeta):
     """
-    Base class for client and server connections.
-
-    The connection object only exposes metadata about the connection, but not the underlying socket object.
-    This is intentional, all I/O should be handled by `mitmproxy.proxy.server` exclusively.
+    连接基类。
+    - 管理连接的基本属性和状态
+    - 仅暴露连接元数据，不直接操作底层socket
+    - 所有I/O操作应由 mitmproxy.proxy.server 处理
     """
 
     peername: Address | None
@@ -173,7 +173,9 @@ class Connection(serializable.SerializableDataclass, metaclass=ABCMeta):
 
 @dataclass(eq=False, repr=False, kw_only=True)
 class Client(Connection):  # type: ignore[override]
-    """A connection between a client and mitmproxy."""
+    """客户端连接类。
+    继承自Connection，表示客户端到mitmproxy的连接。
+    """
 
     peername: Address
     """The client's address."""
@@ -261,7 +263,9 @@ class Client(Connection):  # type: ignore[override]
 
 @dataclass(eq=False, repr=False, kw_only=True)
 class Server(Connection):
-    """A connection between mitmproxy and an upstream server."""
+    """服务器连接类。
+    继承自Connection，表示mitmproxy到目标服务器的连接。
+    """
 
     address: Address | None  # type: ignore
     """

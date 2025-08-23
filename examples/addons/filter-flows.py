@@ -1,5 +1,5 @@
 """
-Use mitmproxy's filter pattern in scripts.
+在脚本中使用mitmproxy的过滤器模式。
 """
 
 from __future__ import annotations
@@ -19,11 +19,11 @@ class Filter:
             self.filter = flowfilter.parse(".")
 
     def load(self, loader: Loader):
-        loader.add_option("flowfilter", str, "", "Check that flow matches filter.")
+        loader.add_option("flowfilter", str, "", "检查流量是否匹配过滤器。")
 
     def response(self, flow: http.HTTPFlow) -> None:
         if flowfilter.match(self.filter, flow):
-            logging.info("Flow matches filter:")
+            logging.info("流量匹配过滤器:")
             logging.info(flow)
 
 
