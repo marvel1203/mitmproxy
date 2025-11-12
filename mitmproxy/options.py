@@ -218,5 +218,13 @@ class Options(optmanager.OptManager):
             None,
             "用于 Protobuf 美化显示字段名的 .proto 文件路径。",
         )
+        self.add_option(
+            "tcp_timeout",
+            int,
+            600,
+            """
+            Timeout in seconds for inactive TCP connections. Connections will be closed after this period of inactivity.
+            """,
+        )
 
         self.update(**kwargs)
