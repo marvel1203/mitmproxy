@@ -35,6 +35,23 @@ use GitHub Discussions!
 
 [![mitmproxy discussions](https://shields.mitmproxy.org/badge/help-github%20discussions-orange.svg)](https://github.com/mitmproxy/mitmproxy/discussions)
 
+## 中文文档 / Chinese Documentation
+
+本项目已完成全面中文化，包括代码注释和技术文档。
+
+📚 **中文文档导航**：
+- [中文文档索引](./中文文档索引.md) - 文档总览和学习路径
+- [核心功能代码解读](./核心功能代码解读.md) - 深度实现细节（38 KB）
+- [开发实战指南](./开发实战指南.md) - 完整代码示例（31 KB）
+- [学习指导](./学习指导.md) - 架构和功能说明（32 KB）
+- [安装文档](./安装文档.md) - 环境搭建指南
+
+**特点**：
+- ✅ 所有核心代码注释已翻译为中文
+- ✅ 100+ KB 技术文档，115+ 个代码示例
+- ✅ 从入门到精通的完整学习路径
+- ✅ 达到开发者可以介入开发的程度
+
 ## Contributing
 
 As an open source project, mitmproxy welcomes contributions of all forms.
